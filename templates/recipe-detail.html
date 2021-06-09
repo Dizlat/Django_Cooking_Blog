@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+     {% block content %}
+
+							<!-- Content -->
+								<section>
+									<header class="main">
+										<h1>Generic</h1>
+									</header>
+
+									<span class="image main"><img src="{{ recipe.get_image }}" style="width: auto; height: auto;" alt="" /></span>
+
+									<p>Posted: {{ recipe.created }}</p>
+									<p>Author: {{ recipe.user.username }}</p>
+									<p>Cooking time: {{ recipe.cooking_time }} min</p>
+
+									<hr class="major" />
+									{% for image in images %}
+									<img src="{{ image }}" style="width: 500px; height: 500px;" class="img-thumbnail" alt="...">
+									{% endfor %}
+
+									<h2>{{ recipe.description| truncatewords:10 }}</h2>
+									<p>{{ recipe.description }}</p>
+									<a href="{% url 'update-recipe' recipe.id %}"><i class="fas fa-edit"></i></a>
+									<a href="{% url 'delete-recipe' recipe.id %}"><i class="fas fa-trash-alt"></i></a>
+
+
+								</section>
+
+				{% endblock %}

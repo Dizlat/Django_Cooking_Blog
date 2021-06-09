@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+							<!-- Banner -->
+								<section id="banner">
+									<div class="content">
+										<header>
+											<h1>{{ category.name }}<br />
+											by HTML5 UP</h1>
+<!--											<p>A free and fully responsive site template</p>-->
+										</header>
+										<p>Aenean ornare velit lacus, ac varius enim ullamcorper eu. Proin aliquam facilisis ante interdum congue. Integer mollis, nisl amet convallis, porttitor magna ullamcorper, amet egestas mauris. Ut magna finibus nisi nec lacinia. Nam maximus erat id euismod egestas. Pellentesque sapien ac quam. Lorem ipsum dolor sit nullam.</p>
+										{% if category.get_children %}
+										{% for child in category.get_children %}
+										<ul class="actions">
+											<li><a href="{% url 'category' child.slug %}" class="button big">{{ child.name }}</a></li>
+										</ul>
+										{% endfor %}
+										{% endif %}
+									</div>
+									<span class="image object">
+										<img src="{{ category.image.url }}" style="width: 500px; height: 500px;" alt="" />
+									</span>
+								</section>
+
+						{% if not category.get_children %}
+							<!-- Section -->
+								<section>
+									<header class="major">
+										<h2>Ipsum sed dolor</h2>
+									</header>
+									<div class="posts">
+										{% for recipe in recipes %}
+										<article>
+											<a href="#" class="image"><img src="{{ recipe.get_image }}" style="width: 200px; height: 200px;" alt="" /></a>
+											<h3>{{ recipe }}</h3>
+											<p>{{ recipe.description| truncatewords:18 }}</p>
+											<ul class="actions">
+												<li><a href="{% url 'detail' recipe.id %}" class="button">More</a></li>
+											</ul>
+										</article>
+										{% endfor %}
+									</div>
+								</section>
+{% endif %}
+{% endblock %}
+
