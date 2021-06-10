@@ -1,12 +1,20 @@
 from django.forms import modelformset_factory
 from django.shortcuts import render, get_object_or_404, redirect
 from  django.contrib import messages
+from django.views.generic import ListView, DetailView, DeleteView, CreateView
+
 from .forms import *
 from .models import *
 
 
-def index(request):
-    return render(request, 'index.html')
+# def index(request):
+#     recipes = Recipe.objects.all()
+#     return render(request, 'index.html', {'recipes': recipes})
+
+class MainPageView(ListView):
+    model = Recipe
+    template_name = 'index.html'
+    context_object_name = 'recipes'
 
 
 def category_detail(request, slug):
