@@ -17,10 +17,25 @@ class MainPageView(ListView):
     context_object_name = 'recipes'
 
 
-def category_detail(request, slug):
-    category = Category.objects.get(slug=slug)
-    recipes = Recipe.objects.filter(category_id=slug)
-    return render(request, 'category-detail.html', locals())
+# def category_detail(request, slug):
+#     category = Category.objects.get(slug=slug)
+#     recipes = Recipe.objects.filter(category_id=slug)
+#     return render(request, 'category-detail.html', locals())
+
+class CategoryDetailView(DetailView):
+    model = Category
+    template_name = 'category-detail.html'
+    context_object_name = 'category'
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.slug = kwargs.get('slug', None)
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['recipes'] = Recipe.objects.filter(category_id=self.slug)
+        return context
 
 
 def recipe_detail(request, pk):
