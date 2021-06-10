@@ -1,6 +1,8 @@
 from django.forms import modelformset_factory
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from  django.contrib import messages
+from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, DeleteView, CreateView
 
 from .forms import *
@@ -89,10 +91,25 @@ def update_recipe(request, pk):
     return render(request, 'update-recipe.html', locals())
 
 
-def delete_recipe(request, pk):
-    recipe = get_object_or_404(Recipe, pk=pk)
-    if request.method == 'POST':
-        recipe.delete()
+# def delete_recipe(request, pk):
+#     recipe = get_object_or_404(Recipe, pk=pk)
+#     if request.method == 'POST':
+#         recipe.delete()
+#         messages.add_message(request, messages.SUCCESS, 'Successfully deleted!')
+#         return redirect('home')
+#     return render(request, 'delete-recipe.html')
+
+class DeleteRecipeView(DeleteView):
+    model = Recipe
+    template_name = 'delete-recipe.html'
+    success_url = reverse_lazy('home')
+
+    def delete(self, request, *args, **kwargs):
+
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.delete()
         messages.add_message(request, messages.SUCCESS, 'Successfully deleted!')
-        return redirect('home')
-    return render(request, 'delete-recipe.html')
+        return HttpResponseRedirect(success_url)
+
+
