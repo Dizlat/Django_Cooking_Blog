@@ -6,6 +6,8 @@
         {% csrf_token %}
 
     <input class="btn btn-primary" type="submit" value="Delete">
+        <a class="btn " href="{% url 'home' %}" role="button">Cancel</a>
+
 
     </form>
 {% endblock %}
