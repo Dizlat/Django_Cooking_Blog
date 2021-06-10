@@ -19,7 +19,7 @@
 
 							<!-- Header -->
 								<header id="header">
-									<a href="index.html" class="logo"><strong>Editorial</strong> by HTML5 UP</a>
+									<a href="index.html" class="logo"><strong>Editorial</strong></a>
 									<ul class="icons">
 										<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
 										<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
@@ -39,8 +39,8 @@
 
 							<!-- Search -->
 								<section id="search" class="alt">
-									<form method="post" action="#">
-										<input type="text" name="query" id="query" placeholder="Search" />
+									<form method="get" action="{% url 'home' %}">
+										<input type="text" name="q" id="query" placeholder="Search" />
 									</form>
 								</section>
 
@@ -60,6 +60,7 @@
 											</ul>
 										</li>
 										<li><a href="{% url 'add-recipe' %}">Add my own recipe</a></li>
+										<li><a href="{% url 'home' %}?filter=new">New Recipes</a></li>
 									</ul>
 								</nav>
 
