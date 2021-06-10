@@ -38,14 +38,25 @@ class CategoryDetailView(DetailView):
         return context
 
 
-def recipe_detail(request, pk):
-    recipe = get_object_or_404(Recipe, pk=pk)
-    image = recipe.get_image
-    images = recipe.images.exclude(id=image.id)
-    return render(request, 'recipe-detail.html', locals())
+# def recipe_detail(request, pk):
+#     recipe = get_object_or_404(Recipe, pk=pk)
+#     image = recipe.get_image
+#     images = recipe.images.exclude(id=image.id)
+#     return render(request, 'recipe-detail.html', locals())
+
+class RecipeDetailView(DetailView):
+    model = Recipe
+    template_name = 'recipe-detail.html'
+    context_object_name = 'recipe'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        image = self.get_object().get_image
+        context['images'] = self.get_object().images.exclude(id=image.id)
+        return  context
 
 
-def add_recipe(request):
+def add_recipe(request):   # CreateView: model, template_name, context_object_name, form_class
     ImageFormSet = modelformset_factory(Image, form=ImageForm, max_num=5)
     if request.method == 'POST':
         recipe_form = RecipeForm(request.POST)
