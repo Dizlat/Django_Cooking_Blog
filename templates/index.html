@@ -25,7 +25,7 @@
 
 
 									<div class="posts">
-										{% for recipe in recipes %}
+										{% for recipe in page_obj %}
 										<article>
 											<a href="#" class="image"><img src="{{ recipe.get_image }}" style="width: 200px; height: 200px;" alt="" /></a>
 											<h3>{{ recipe }}</h3>
@@ -38,5 +38,20 @@
 									</div>
 
 								</section>
+<nav aria-label="...">
+	<ul class="pagination pagination-sm">
+		{% if page_obj.has_previous %}
+		<li class="page-item"><a class="page-link" href="{% url 'home' %}?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a></li>
+		{% endif %}
 
-				{% endblock %}
+		<li class="page-item active" aria-current="page">
+			<span class="page-link">{{ page_obj.number }}</span>
+		</li>
+
+		{% if page_obj.has_next %}
+		<li class="page-item"><a class="page-link" href="{% url 'home' %}?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a></li>
+		{% endif %}
+	</ul>
+</nav>
+
+{% endblock %}

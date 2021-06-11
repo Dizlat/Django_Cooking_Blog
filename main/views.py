@@ -21,6 +21,7 @@ class MainPageView(ListView):
     model = Recipe
     template_name = 'index.html'
     context_object_name = 'recipes'
+    paginate_by = 2
 
     def get_template_names(self):
         template_name = super(MainPageView, self).get_template_names()
