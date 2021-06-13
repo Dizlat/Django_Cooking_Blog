@@ -5,18 +5,42 @@ from django.db.models import Q
 from django.forms import modelformset_factory
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from  django.contrib import messages
+from django.contrib import messages
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import ListView, DetailView, DeleteView, CreateView
 
 from .forms import *
 from .models import *
+from .permissions import UserHasPermissionMixin
 
 
 # def index(request):
 #     recipes = Recipe.objects.all()
 #     return render(request, 'index.html', {'recipes': recipes})
+
+
+# def delete_recipe(request, pk):
+#     recipe = get_object_or_404(Recipe, pk=pk)
+#     if request.method == 'POST':
+#         recipe.delete()
+#         messages.add_message(request, messages.SUCCESS, 'Successfully deleted!')
+#         return redirect('home')
+#     return render(request, 'delete-recipe.html')
+
+
+# def category_detail(request, slug):
+#     category = Category.objects.get(slug=slug)
+#     recipes = Recipe.objects.filter(category_id=slug)
+#     return render(request, 'category-detail.html', locals())
+
+
+# def recipe_detail(request, pk):
+#     recipe = get_object_or_404(Recipe, pk=pk)
+#     image = recipe.get_image
+#     images = recipe.images.exclude(id=image.id)
+#     return render(request, 'recipe-detail.html', locals())
+
 
 class MainPageView(ListView):
     model = Recipe
@@ -27,8 +51,11 @@ class MainPageView(ListView):
     def get_template_names(self):
         template_name = super(MainPageView, self).get_template_names()
         search = self.request.GET.get('q')
+        filter = self.request.GET.get('filter')
         if search:
             template_name = 'search.html'
+        elif filter:
+            template_name = 'new.html'
         return template_name
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -46,11 +73,6 @@ class MainPageView(ListView):
         return context
 
 
-# def category_detail(request, slug):
-#     category = Category.objects.get(slug=slug)
-#     recipes = Recipe.objects.filter(category_id=slug)
-#     return render(request, 'category-detail.html', locals())
-
 class CategoryDetailView(DetailView):
     model = Category
     template_name = 'category-detail.html'
@@ -66,12 +88,6 @@ class CategoryDetailView(DetailView):
         context['recipes'] = Recipe.objects.filter(category_id=self.slug)
         return context
 
-
-# def recipe_detail(request, pk):
-#     recipe = get_object_or_404(Recipe, pk=pk)
-#     image = recipe.get_image
-#     images = recipe.images.exclude(id=image.id)
-#     return render(request, 'recipe-detail.html', locals())
 
 class RecipeDetailView(DetailView):
     model = Recipe
@@ -122,21 +138,13 @@ def update_recipe(request, pk):
     else:
         return HttpResponse('<h1> Error:403 Forbidden</h1>')
 
-# def delete_recipe(request, pk):
-#     recipe = get_object_or_404(Recipe, pk=pk)
-#     if request.method == 'POST':
-#         recipe.delete()
-#         messages.add_message(request, messages.SUCCESS, 'Successfully deleted!')
-#         return redirect('home')
-#     return render(request, 'delete-recipe.html')
 
-class DeleteRecipeView(DeleteView):
+class DeleteRecipeView(UserHasPermissionMixin, DeleteView):
     model = Recipe
     template_name = 'delete-recipe.html'
     success_url = reverse_lazy('home')
 
     def delete(self, request, *args, **kwargs):
-
         self.object = self.get_object()
         success_url = self.get_success_url()
         self.object.delete()
