@@ -81,7 +81,7 @@ class RecipeDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         image = self.get_object().get_image
         context['images'] = self.get_object().images.exclude(id=image.id)
-        return  context
+        return context
 
 
 def add_recipe(request):   # CreateView: model, template_name, context_object_name, form_class
