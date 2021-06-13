@@ -108,7 +108,10 @@ def add_recipe(request):   # CreateView: model, template_name, context_object_na
         recipe_form = RecipeForm(request.POST)
         formset = ImageFormSet(request.POST, request.FILES, queryset=Image.objects.none())
         if recipe_form.is_valid() and formset.is_valid():
-            recipe = recipe_form.save()
+            recipe = recipe_form.save(commit=False)
+            recipe.user = request.user
+            recipe.save()
+
             for form in formset.cleaned_data:
                 image = form['image']
                 Image.objects.create(image=image, recipe=recipe)

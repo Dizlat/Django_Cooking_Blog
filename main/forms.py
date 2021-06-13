@@ -6,8 +6,8 @@ from .models import *
 class RecipeForm(forms.ModelForm):
     class Meta:
         model = Recipe
-        # exclude = ('created', )
-        fields = '__all__'
+        exclude = ('created', 'user')
+        # fields = '__all__'
 
 
 class ImageForm(forms.ModelForm):
