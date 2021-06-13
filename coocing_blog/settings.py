@@ -141,3 +141,4 @@ AUTH_USER_MODEL = 'account.User'
 
 
 LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'

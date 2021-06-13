@@ -21,9 +21,13 @@
 								<header id="header">
 									<a href="index.html" class="logo"><strong>Editorial</strong></a>
 									<ul class="icons">
+										{% if not request.user.is_authenticated %}
 										<a href="{% url 'register' %}"><i class="fa fa-registered" aria-hidden="true"></i></a>
 										<a href="{% url 'login'  %}"><i class="far fa-user"></i></a>
-										<a href="#"><i class="fas fa-user"></i></a>
+										{% else %}
+										<a href="{% url 'logout' %}"><i class="fas fa-user"></i></a>
+										{% endif %}
+
 									</ul>
 								</header>
 							{% block content %}{% endblock %}
@@ -49,6 +53,9 @@
 									</header>
 									<ul>
 										<li><a href="{% url 'home' %}">Homepage</a></li>
+										{% if request.user.is_authenticated %}
+										<li><a href="{% url 'profile' %}">My profile</a></li>
+										{% endif %}
 										<li>
 											<span class="opener">Submenu</span>
 											<ul>

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<section id="banner">
+  <div class="content">
+    <header>
+      <h1>{{ request.user.username }}</h1>
+<!--<p>A free and fully responsive site template</p>-->
+    </header>
+    <p>{{ request.user }}</p>
+    <p>{{ request.user.date_joined }}</p>
+  </div>
+  <span class="image object">
+    <img src="{{ request.user.image.url }}" style="width: 500px; height: 500px;" alt="" />
+  </span>
+</section>
+{% endblock %}

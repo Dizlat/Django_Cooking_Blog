@@ -4,7 +4,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, DetailView
 
 from .models import User
 from  .forms import RegistrationForm
@@ -20,4 +20,8 @@ class RegisterView(SuccessMessageMixin, CreateView):
 
 class SignInView(LoginView):
     template_name = 'account/login.html'
+
+
+def profile(request):
+    return render(request, 'account/profile.html')
 
