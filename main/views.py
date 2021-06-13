@@ -1,8 +1,9 @@
 from datetime import timedelta
 
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.forms import modelformset_factory
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from  django.contrib import messages
 from django.urls import reverse_lazy
@@ -84,6 +85,7 @@ class RecipeDetailView(DetailView):
         return context
 
 
+@login_required(login_url='login')
 def add_recipe(request):   # CreateView: model, template_name, context_object_name, form_class
     ImageFormSet = modelformset_factory(Image, form=ImageForm, max_num=5)
     if request.method == 'POST':
@@ -103,19 +105,22 @@ def add_recipe(request):   # CreateView: model, template_name, context_object_na
 
 def update_recipe(request, pk):
     recipe = get_object_or_404(Recipe, pk=pk)
-    ImageFormSet = modelformset_factory(Image, form=ImageForm, max_num=5)
-    recipe_form = RecipeForm(request.POST or None, instance=recipe)
-    formset = ImageFormSet(request.POST or None, request.FILES or None, queryset=Image.objects.filter(recipe=recipe))
-    if recipe_form.is_valid() and formset.is_valid():
-        recipe_form.save()
+    if request.user == recipe.user:
+        ImageFormSet = modelformset_factory(Image, form=ImageForm, max_num=5)
+        recipe_form = RecipeForm(request.POST or None, instance=recipe)
+        formset = ImageFormSet(request.POST or None, request.FILES or None, queryset=Image.objects.filter(recipe=recipe))
+        if recipe_form.is_valid() and formset.is_valid():
+            recipe_form.save()
 
-        for form in formset:
-            image = form.save(commit=False)
-            image.recipe = recipe
-            image.save()
-        return redirect(recipe.get_absolute_url())
-    return render(request, 'update-recipe.html', locals())
+            for form in formset:
+                image = form.save(commit=False)
+                image.recipe = recipe
+                image.save()
+            return redirect(recipe.get_absolute_url())
+        return render(request, 'update-recipe.html', locals())
 
+    else:
+        return HttpResponse('<h1> Error:403 Forbidden</h1>')
 
 # def delete_recipe(request, pk):
 #     recipe = get_object_or_404(Recipe, pk=pk)
@@ -136,6 +141,6 @@ class DeleteRecipeView(DeleteView):
         success_url = self.get_success_url()
         self.object.delete()
         messages.add_message(request, messages.SUCCESS, 'Successfully deleted!')
-        return HttpResponseRedirect(success_url)
+        return HttpResponse(success_url)
 
 
